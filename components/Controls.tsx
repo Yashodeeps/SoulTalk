@@ -7,10 +7,51 @@ import { Toggle } from "./ui/toggle";
 import MicFFT from "./MicFFT";
 import { cn } from "@/utils";
 import { useMessage } from "@/lib/AppContext";
+import axios from "axios";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function Controls() {
   const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();
   const { messagesObj } = useMessage();
+
+  //@ts-ignore
+  const filteredMessages =
+    messagesObj &&
+    // @ts-ignore
+    messagesObj.map((msg) => {
+      if (msg.type === "user_message" || msg.type === "assistant_message") {
+        return msg;
+      }
+    });
+
+  const conversationString = (filteredMessages || [])
+    .filter((msg) => msg !== undefined)
+    .map(
+      (msg: { type: string; message: { content?: string; text?: string } }) => {
+        const role = msg.type === "user_message" ? "User" : "AI";
+        const content = msg.message.content || msg.message.text || "No content";
+        return `${role}: ${content}`;
+      }
+    )
+    .join("\n");
+  console.log({ conversationString });
+  async function handleSummary() {
+    const apiKey = process.env.NEXT_PUBLIC_GEMINI;
+    if (!apiKey) {
+      throw new Error("NEXT_PUBLIC_GEMINI is not defined");
+    }
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const prompt = `Give a third person summary of a conversation messages between user and Ai therapist in under 300 words. Summarize such that the learnings of the users form the talk and users mental health status. Heres the conversation: ${conversationString}`;
+
+      const result = await model.generateContent(prompt);
+      console.log(result.response.text());
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
 
   return (
     <div
@@ -64,6 +105,7 @@ export default function Controls() {
               onClick={() => {
                 disconnect();
                 console.log({ messagesObj });
+                handleSummary();
               }}
               variant={"destructive"}
             >
