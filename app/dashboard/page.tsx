@@ -1,20 +1,21 @@
-import { getHumeAccessToken } from "@/utils/getHumeAccessToken";
-import dynamic from "next/dynamic";
+"use client";
+import SideMenu from "@/components/SideBar";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import React from "react";
 
-const Chat = dynamic(() => import("@/components/Chat"), {
-  ssr: false,
-});
-
-export default async function Page() {
-  const accessToken = await getHumeAccessToken();
-
-  if (!accessToken) {
-    throw new Error();
-  }
-
+const page = () => {
+  const router = useRouter();
   return (
-    <div className={"grow flex flex-col"}>
-      <Chat accessToken={accessToken} />
+    <div className=" ">
+      <SideMenu />
+      <div className="flex justify-center items-center w-screen">
+        <Button onClick={() => router.push("/dashboard/room")}>
+          Enter Therapy Room
+        </Button>
+      </div>
     </div>
   );
-}
+};
+
+export default page;
