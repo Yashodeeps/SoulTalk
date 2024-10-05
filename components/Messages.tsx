@@ -66,7 +66,7 @@ const Messages = forwardRef<
     //     </AnimatePresence>
     //   </motion.div>
     // </motion.div>
-    <div className="mt-20 bg-slate-500">
+    <div className="fixed mt-20 bg-slate-500">
       {messages.map((msg, index) => {
         if (msg.type === "user_message" || msg.type === "assistant_message") {
           return (

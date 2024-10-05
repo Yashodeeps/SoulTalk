@@ -1,3 +1,4 @@
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { getHumeAccessToken } from "@/utils/getHumeAccessToken";
 import dynamic from "next/dynamic";
 
@@ -14,7 +15,9 @@ export default async function Page() {
 
   return (
     <div className={"grow flex flex-col"}>
-      <Chat accessToken={accessToken} />
+      <BackgroundBeamsWithCollision>
+        <Chat accessToken={accessToken} />
+      </BackgroundBeamsWithCollision>
     </div>
   );
 }
