@@ -6,9 +6,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Toggle } from "./ui/toggle";
 import MicFFT from "./MicFFT";
 import { cn } from "@/utils";
+import { useMessage } from "@/lib/AppContext";
 
 export default function Controls() {
   const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();
+  const { messagesObj } = useMessage();
 
   return (
     <div
@@ -61,6 +63,7 @@ export default function Controls() {
               className={"flex items-center gap-1"}
               onClick={() => {
                 disconnect();
+                console.log({ messagesObj });
               }}
               variant={"destructive"}
             >
