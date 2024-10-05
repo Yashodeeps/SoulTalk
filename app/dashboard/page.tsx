@@ -4,18 +4,15 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   return (
-    <div className=" ">
-      <SideMenu />
-      <div className="flex justify-center items-center w-screen">
-        <Button onClick={() => router.push("/dashboard/room")}>
-          Enter Therapy Room
-        </Button>
-      </div>
+    <div className="flex mt-24  justify-center w-screen h-screen">
+      <Button onClick={() => router.push("/dashboard/room")}>
+        Enter Therapy Room
+      </Button>
     </div>
   );
 };
 
-export default page;
+export default Page;
