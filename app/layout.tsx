@@ -7,8 +7,8 @@ import { cn } from "@/utils";
 import Providers from "@/lib/Providers";
 
 export const metadata: Metadata = {
-  title: "Hume AI - EVI - Next.js Starter",
-  description: "A Next.js starter using Hume AI's Empathic Voice Interface",
+  title: "SoulTalk",
+  description: "Your Personalized Therapy Room",
 };
 
 export default function RootLayout({
