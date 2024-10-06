@@ -48,6 +48,12 @@ export default function Controls() {
 
       const result = await model.generateContent(prompt);
       console.log(result.response.text());
+      if (result.response) {
+        const response = await axios.post("/api/summary", {
+          summary: result.response.text(),
+        });
+        console.log("response: ", response.data);
+      }
     } catch (error) {
       console.log("error", error);
     }

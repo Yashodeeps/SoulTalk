@@ -2,11 +2,34 @@
 import SideMenu from "@/components/SideBar";
 import Summarycard from "@/components/Summarycard";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { set } from "remeda";
 
 const Page = () => {
   const router = useRouter();
+  const session = useSession();
+  const [summaries, setSummaries] = useState();
+
+  const getSummary = async () => {
+    try {
+      const response = await axios.get("/api/summary");
+      setSummaries(response.data.data);
+    } catch (error) {
+      console.error(
+        "Error getting summary:",
+        error instanceof Error ? error.message : String(error)
+      );
+    }
+  };
+
+  useEffect(() => {
+    getSummary();
+  }, []);
+
+  console.log(summaries);
   return (
     <div className="w-screen h-screen ">
       <div className="flex mt-24  justify-center pb-4">
@@ -19,15 +42,11 @@ const Page = () => {
       </div>
 
       <div className="flex flex-wrap mx-auto justify-center">
-        <Summarycard />
-        <Summarycard />
-        <Summarycard />
-        <Summarycard />
-        <Summarycard />
-        <Summarycard />
-        <Summarycard />
-        <Summarycard />
-        <Summarycard />
+        {summaries &&
+          // @ts-ignore
+          summaries.map((summary: any) => (
+            <Summarycard key={summary.id} summary={summary} />
+          ))}
       </div>
     </div>
   );
