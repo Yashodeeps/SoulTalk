@@ -28,7 +28,7 @@ const Page = () => {
     <div className="flex justify-center items-center h-screen">
       <div className="flex flex-col pl-12  w-1/2 h-full justify-center items-start">
         <div>
-          <h1 className="text-8xl font-bold ">Welcome to SoulTalk</h1>
+          <h1 className="text-8xl font-bold ">Welcome to TheraTone</h1>
           <p className="text-2xl py-4 ">Your Personalized Therapy Platform</p>
         </div>
         <button

@@ -22,7 +22,7 @@ export default function ClientComponent({
     >
       <VoiceProvider
         auth={{ type: "accessToken", value: accessToken }}
-        // configId="ac989939-4a2c-4dc1-a46c-3cde72260a52"
+        configId="7aeab8cf-70ee-4bba-8e09-b08aeb2b1015"
         // sessionSettings={{
         //   type: "session_settings",
         //   context: {
