@@ -1,11 +1,15 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Moon, Sun } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export const Nav = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const session = useSession();
+  const router = useRouter();
 
   useLayoutEffect(() => {
     const el = document.documentElement;
@@ -22,6 +26,15 @@ export const Nav = () => {
     el.classList.toggle("dark");
     setIsDarkMode((prev) => !prev);
   };
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+  useEffect(() => {
+    if (!session.data?.user) {
+      router.push("/");
+    }
+  }, [session, router, handleSignOut]);
 
   return (
     <div
@@ -45,6 +58,20 @@ export const Nav = () => {
           </span>
           <span>{isDarkMode ? "Light" : "Dark"} Mode</span>
         </Button>
+        {session.data?.user ? (
+          <Button variant={"ghost"} onClick={handleSignOut}>
+            Logout
+          </Button>
+        ) : (
+          <Button
+            variant={"ghost"}
+            onClick={() => {
+              signIn("google");
+            }}
+          >
+            LogIn
+          </Button>
+        )}
       </div>
     </div>
   );
