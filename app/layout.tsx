@@ -7,7 +7,7 @@ import { cn } from "@/utils";
 import Providers from "@/lib/Providers";
 
 export const metadata: Metadata = {
-  title: "SoulTalk",
+  title: "TheraTone",
   description: "Your Personalized Therapy Room",
 };
 
