@@ -1,8 +1,10 @@
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { getHumeAccessToken } from "@/utils/getHumeAccessToken";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 
-const Chat = dynamic(() => import("@/components/Chat"), {
+export const dynamic = "force-dynamic";
+
+const Chat = nextDynamic(() => import("@/components/Chat"), {
   ssr: false,
 });
 
