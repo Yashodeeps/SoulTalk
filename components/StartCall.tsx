@@ -1,11 +1,40 @@
 import { useVoice } from "@humeai/voice-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import { Button } from "./ui/button";
 
 const CONFIG_ID = "038d34b0-8779-4399-8fa6-878521b45462";
 
-export default function StartCall({ accessToken }: { accessToken: string }) {
+export default function StartCall() {
   const { status, connect } = useVoice();
+  const [connecting, setConnecting] = useState(false);
+
+  const handleStart = async () => {
+    if (connecting) return;
+    setConnecting(true);
+    try {
+      const res = await fetch("/api/hume-token", { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error(`Token request failed: ${res.status}`);
+      }
+      const { accessToken } = (await res.json()) as { accessToken: string };
+      if (!accessToken) {
+        throw new Error("No access token returned");
+      }
+      await connect({
+        auth: { type: "accessToken", value: accessToken },
+        configId: CONFIG_ID,
+      });
+    } catch (err) {
+      console.error("Hume connect failed:", err);
+      alert(
+        "Could not start therapy: " +
+          (err instanceof Error ? err.message : String(err))
+      );
+    } finally {
+      setConnecting(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -39,20 +68,10 @@ export default function StartCall({ accessToken }: { accessToken: string }) {
               >
                 <Button
                   className={"z-50 flex items-center gap-1.5"}
-                  onClick={() => {
-                    connect({
-                      auth: { type: "accessToken", value: accessToken },
-                      configId: CONFIG_ID,
-                    }).catch((err) => {
-                      console.error("Hume connect failed:", err);
-                      alert(
-                        "Could not start therapy: " +
-                          (err instanceof Error ? err.message : String(err))
-                      );
-                    });
-                  }}
+                  disabled={connecting}
+                  onClick={handleStart}
                 >
-                  <span>Start Therapy</span>
+                  <span>{connecting ? "Connecting…" : "Start Therapy"}</span>
                 </Button>
               </motion.div>
             </AnimatePresence>

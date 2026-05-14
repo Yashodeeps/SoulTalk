@@ -6,11 +6,7 @@ import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { ComponentRef, useRef } from "react";
 
-export default function ClientComponent({
-  accessToken,
-}: {
-  accessToken: string;
-}) {
+export default function ClientComponent() {
   const timeout = useRef<number | null>(null);
   const ref = useRef<ComponentRef<typeof Messages> | null>(null);
 
@@ -40,7 +36,7 @@ export default function ClientComponent({
       >
         <Messages ref={ref} />
         <Controls />
-        <StartCall accessToken={accessToken} />
+        <StartCall />
       </VoiceProvider>
     </div>
   );
