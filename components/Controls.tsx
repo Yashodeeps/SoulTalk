@@ -8,7 +8,6 @@ import MicFFT from "./MicFFT";
 import { cn } from "@/utils";
 import { useMessage } from "@/lib/AppContext";
 import axios from "axios";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function Controls() {
   const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();
@@ -36,26 +35,25 @@ export default function Controls() {
     .join("\n");
   console.log({ conversationString });
   async function handleSummary() {
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI;
-    if (!apiKey) {
-      throw new Error("NEXT_PUBLIC_GEMINI is not defined");
+    if (!conversationString.trim()) {
+      console.warn("No conversation to summarize");
+      return;
     }
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-      const prompt = `Give a third person summary of a conversation messages between user and Ai therapist in under 300 words. Summarize such that the learnings of the users form the talk and users mental health status. Heres the conversation: ${conversationString}`;
-
-      const result = await model.generateContent(prompt);
-      console.log(result.response.text());
-      if (result.response) {
-        const response = await axios.post("/api/summary", {
-          summary: result.response.text(),
-        });
-        console.log("response: ", response.data);
-      }
+      const response = await axios.post("/api/summary", {
+        conversation: conversationString,
+      });
+      console.log("summary saved:", response.data);
     } catch (error) {
-      console.log("error", error);
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "summary save failed:",
+          error.response?.status,
+          error.response?.data
+        );
+      } else {
+        console.error("summary save failed:", error);
+      }
     }
   }
 
@@ -108,10 +106,9 @@ export default function Controls() {
 
             <Button
               className={"flex items-center gap-1"}
-              onClick={() => {
+              onClick={async () => {
+                await handleSummary();
                 disconnect();
-                console.log({ messagesObj });
-                handleSummary();
               }}
               variant={"destructive"}
             >
